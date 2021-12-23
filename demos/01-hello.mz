@@ -1,0 +1,7 @@
+main:
+    move        0,sp
+    snew        "hello world!"
+    move        $0,r0
+    sysc        0
+    move        1,r0
+    sysc        1
