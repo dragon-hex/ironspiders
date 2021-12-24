@@ -1,4 +1,4 @@
-import mizc
+import ironspiders
 import sys
 import os
 
@@ -68,18 +68,18 @@ class mizuApp:
         fileN, lines = open(fileName, 'r'), []
         for fileLine in fileN:
             lines.append(
-                mizc.parser(
+                ironspiders.parser(
                     fileLine.replace('\t', ' ').replace('\n','')
                 )
             )
         fileN.close()
         # lexer state & binary generation!
         if DEBUG_THIS_FILE:
-            binaryGen = mizc.lexer(lines,debug=self.enableDebug)
+            binaryGen = ironspiders.lexer(lines,debug=self.enableDebug)
         else:
-            try:    binaryGen = mizc.lexer(lines)
+            try:    binaryGen = ironspiders.lexer(lines)
             except Exception as E: self.die(E)
-        if self.showBinary: mizc.showMemoryHexView(binaryGen)
+        if self.showBinary: ironspiders.showMemoryHexView(binaryGen)
         self.fileBinary = binaryGen
 
 if __name__ == '__main__':
