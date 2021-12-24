@@ -1,7 +1,7 @@
 from .opcode import *
 from .utility import *
 
-DEBUG_THIS_FILE = True
+DEBUG_THIS_FILE = False
 from .debug import debugLogging
 import sys
 
@@ -39,9 +39,9 @@ def convertToData(string):
         string          = string[1:len(string)-1]
         # NOTE the strings has 16 bit size! So, it comes in pair with the High Byte, Mid Byte and Low Byte!
         # this allows for more interactions of characters, such as hiragana.
-        data = [DATA_TYPE_STRING] + split8(stringLength, length=4)
+        data            = [DATA_TYPE_STRING] + split8(stringLength, length=4)
         for char in string:
-            charSet = split8(ord(char),length=3)
+            charSet     = split8(ord(char),length=3)
             data.append(charSet[0])
             data.append(charSet[1])
             data.append(charSet[2])
@@ -49,21 +49,21 @@ def convertToData(string):
 
     # TODO: implement DECIMAL numbers!
     elif string[0] == '$': 
-        numberLength = 4
-        stackValue = int(string[1:len(string)])
+        numberLength    = 4
+        stackValue      = int(string[1:len(string)])
         return [DATA_TYPE_STACK_POINTER, numberLength] + split8(stackValue,length=numberLength)
     elif string in _RT.keys():
         return [DATA_TYPE_REGISTER, _RT.get(string)]
     else:
         # TODO: optimize the number pool!
-        numberLength = 4
+        numberLength    = 4
         return [DATA_TYPE_NUMBER, numberLength] + split8(int(string),length=numberLength)
 
 
-def lexer(lines):
+def lexer(lines, debug=False):
     """lexer: get all the tokens and convert to bytecode."""
-    __l = debugLogging(DEBUG_THIS_FILE, 'lexer')
-    if DEBUG_THIS_FILE: __l.debugOutputNew(sys.stdout)
+    __l = debugLogging(DEBUG_THIS_FILE or debug, 'lexer')
+    if DEBUG_THIS_FILE or debug: __l.debugOutputNew(sys.stdout)
 
     # NOTE the bytecode doesn't need of any ',', so remove
     # it here, this only serves to decorate.
@@ -115,6 +115,7 @@ def lexer(lines):
                     # get all the possible arguments for the opcodes
                     tokenIndex += (1 + OPCODE_TABLE_DATA[1])
                 else:
+                    # setup the log here.
                     __l.report("invalid opcode: %s" % token)
                     raise invalidOpcodeError(lineIndex+1, tokenIndex, token)
         lineIndex += 1

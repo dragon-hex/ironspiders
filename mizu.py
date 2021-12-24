@@ -13,8 +13,9 @@ class mizuApp:
         self.fileTarget     	= None # -> file to open
         self.fileVM         	= None # -> the virtual machine to run the program
         self.fileBinary     	= None # -> the binary stuff to execute the machine.
-        self.fileOutput	   	= None # -> the file to write the binary code.
-        self.showBinary   	= False# -> show the binary.
+        self.fileOutput	   	    = None # -> the file to write the binary code.
+        self.showBinary   	    = False# -> show the binary.
+        self.enableDebug        = False# -> show the debug.
     
     def run(self, args):
         """
@@ -25,21 +26,27 @@ class mizuApp:
         fileLoaded=None
         _OA=("-output","--output","-o")
         _SB=("-show-binary","--show-binary","-sbin")
+        _DE=("-debug","--debug","-d")
         while argIndex < argsCountered:
             arg = args[argIndex]
             if os.path.exists(arg) and not fileLoaded:
                 fileLoaded=os.path.abspath(arg)
-                argIndex+=1
             elif arg in _SB:
+                # show the binary
                 self.showBinary = True
-                argIndex+=1
             elif arg in _OA:
+                # find the output file!
                 if argIndex+1 >= argsCountered:
                     self.die("%s needs <file>."%arg)
                 self.fileOutput=args[argIndex+1]
-                argIndex+=2
+                argIndex+=1
+            elif arg in _DE:
+                # enable the debug on the program!
+                self.enableDebug = True
             else:
                 self.die("invalid argument '%s'."%arg)
+            argIndex+=1
+        # open the file!
         self.openFile(fileLoaded)
         if self.fileOutput: self.generateBinary()
     
@@ -68,7 +75,7 @@ class mizuApp:
         fileN.close()
         # lexer state & binary generation!
         if DEBUG_THIS_FILE:
-            binaryGen = mizc.lexer(lines)
+            binaryGen = mizc.lexer(lines,debug=self.enableDebug)
         else:
             try:    binaryGen = mizc.lexer(lines)
             except Exception as E: self.die(E)
