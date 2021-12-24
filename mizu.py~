@@ -2,24 +2,17 @@ import mizc
 import sys
 import os
 
-# debug the file.
 DEBUG_THIS_FILE = True
 
 class mizuApp:
     def __init__(self):
-        """
-        mizuApp: this is a quick wrapper.
-        """
         self.fileTarget     	= None # -> file to open
         self.fileVM         	= None # -> the virtual machine to run the program
         self.fileBinary     	= None # -> the binary stuff to execute the machine.
         self.fileOutput	   	= None # -> the file to write the binary code.
         self.showBinary   	= False# -> show the binary.
     
-    def run(self, args):
-        """
-        run: run the mizuApp.
-        """
+    def run(self, args):	
         argIndex, argsCountered = 1, len(args)
         if argsCountered < 2: self.die("nothing to do.")
         fileLoaded=None
@@ -54,9 +47,6 @@ class mizuApp:
         self.fileOutput.close()
 
     def openFile(self, fileName):
-        """
-        openFile: load the file here.
-        """
         self.fileTarget = fileName
         fileN, lines = open(fileName, 'r'), []
         for fileLine in fileN:
