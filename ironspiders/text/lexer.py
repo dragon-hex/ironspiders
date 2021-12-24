@@ -1,8 +1,7 @@
 from .opcode import *
-from .utility import *
+from ironspiders.utils import debugLogging, split8
 
 DEBUG_THIS_FILE = False
-from .debug import debugLogging
 import sys
 
 class invalidOpcodeError(Exception):
@@ -80,10 +79,8 @@ def lexer(lines, debug=False):
             token = line[tokenIndex]
             if token[len(token)-1] == ':':
                 # NOTE find the token to label definition.
-                # TODO remove this NOP instruction to save
-                # memory on the future! the NOP instruction,
-                # althrough don't use any VM time, it still
-                # costing 1 byte to use it anyway.
+                # TODO: remove the NOP instruction placed on this location
+                # for obvious reasons (it takes a memory space).
                 possibleTokenName = token[0:len(token)-1]
                 possibleAddress = len(binaryGen)
                 
